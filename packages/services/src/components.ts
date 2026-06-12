@@ -12,9 +12,11 @@ export async function getComponents(carId: string): Promise<Component[]> {
 }
 
 export async function createComponent(component: Omit<Component, 'id' | 'user_id' | 'created_at'>): Promise<Component> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Usuário não autenticado')
   const { data, error } = await supabase
     .from('components')
-    .insert(component)
+    .insert({ ...component, user_id: user.id })
     .select()
     .single()
   if (error) throw error

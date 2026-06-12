@@ -11,9 +11,11 @@ export async function getCars(): Promise<Car[]> {
 }
 
 export async function createCar(car: Omit<Car, 'id' | 'user_id' | 'created_at'>): Promise<Car> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Usuário não autenticado')
   const { data, error } = await supabase
     .from('cars')
-    .insert(car)
+    .insert({ ...car, user_id: user.id })
     .select()
     .single()
   if (error) throw error

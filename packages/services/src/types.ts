@@ -19,5 +19,7 @@ export interface Component {
   date: string
   mileage?: number
   notes?: string
+  next_due_type?: 'km' | 'months' | null
+  next_due_value?: number | null
   created_at: string
 }
